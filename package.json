@@ -1,0 +1,24 @@
+{
+  "name": "discordgamelobbymanager",
+  "description": "A Bot that helps create game lobbies",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hy2999la/discordGameLobbyManager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hy2999la/discordGameLobbyManager/issues"
+  },
+  "homepage": "https://github.com/hy2999la/discordGameLobbyManager#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  }
+}
