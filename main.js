@@ -4,25 +4,26 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const mentions = ['apex', 'apex-test'];
+const MAX_LOBBY = 3;
 
 /** @type {Discord.Message} */
 let lobbyMessage = null;
 
 /** @type {Discord.ReactionCollector} */
 let collector = null;
-let lobbyUserNames = [];
+let lobbyUserNames = {};
 
 /// Helper
 
 const filter = (reaction) => reaction.emoji.name === '👍';
 
 const addUserToLobby = (user) => {
-  if (lobbyUserNames.indexOf(user) < 0) {
-    console.log(`Adding ${user} to current lobby`);
-    lobbyUserNames.push(user);
+  if (!lobbyUserNames.hasOwnProperty(user.displayName)) {
+    console.log(`Adding ${user.displayName} to current lobby`);
+    lobbyUserNames[user.displayName] = user.id;
     return true;
   } else {
-    console.log(`${user} already exist in lobby`);
+    console.log(`${user.displayName} already exist in lobby`);
     return false;
   }
 };
@@ -30,11 +31,17 @@ const addUserToLobby = (user) => {
 const onReact = (r, user) => {
   const msg = r.message.toString();
   const foundGuildMember = r.message.guild.member(user);
-  if (addUserToLobby(foundGuildMember.displayName)) {
-    if (lobbyUserNames.length == 3) {
+  if (addUserToLobby(foundGuildMember)) {
+    if (Object.keys(lobbyUserNames).length == MAX_LOBBY) {
       console.log(`Current Lobby is now full, deleting lobby message!`);
       lobbyMessage.delete();
-      lobbyMessage.channel.send(`We have a game ongoing: ${lobbyUserNames[0]}, ${lobbyUserNames[1]}, ${lobbyUserNames[2]}. GL`);
+      let startMsg = 'Game is starting: ';
+      for (let user in lobbyUserNames) {
+        startMsg += `<@${lobbyUserNames[user]}> `
+      }
+      startMsg = startMsg.slice(0, -1);
+      startMsg += '. GL';
+      lobbyMessage.channel.send(startMsg);
       console.log('=============================');
 
       resetCurrLobby();
@@ -50,7 +57,7 @@ const onRemoveReact = (r, user) => {
   const foundGuildMember = r.message.guild.member(user);
   if (msg.indexOf(foundGuildMember.displayName) > 0) {
     console.log(`Removing ${foundGuildMember.displayName} from current lobby`);
-    lobbyUserNames = lobbyUserNames.filter(l => l !== foundGuildMember.displayName);
+    delete lobbyUserNames[foundGuildMember.displayName];
     const newMsg = msg.replace(foundGuildMember.displayName, 'Free');
     lobbyMessage.edit(newMsg);
   } else {
@@ -81,7 +88,7 @@ const createLobby = async (msg, user) => {
   console.log('=============================');
   
   lobbyMessage = msg;
-  addUserToLobby(user.displayName);
+  addUserToLobby(user);
   lobbyMessage = await msg.channel.send(
     `Creating a Lobby...\n1. ${user.displayName}\n2. Free \n3. Free\nReact to join this lobby`
   );
