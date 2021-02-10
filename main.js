@@ -37,9 +37,9 @@ const onReact = (r, user) => {
       lobbyMessage.delete();
       let startMsg = 'Game is starting: ';
       for (let user in lobbyUserNames) {
-        startMsg += `<@${lobbyUserNames[user]}> `
+        startMsg += `<@${lobbyUserNames[user]}> /`
       }
-      startMsg = startMsg.slice(0, -1);
+      startMsg = startMsg.slice(0, -2);
       startMsg += '. GL';
       lobbyMessage.channel.send(startMsg);
       console.log('=============================');
