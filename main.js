@@ -73,7 +73,7 @@ const resetCurrLobby = () => {
 };
 
 const createLobby = async (msg, user) => {
-  if (lobbyMessage != null) {
+  if (lobbyMessage != null && !lobbyMessage.deleted) {
     // There's a lobby already
     console.log('Cancelling lobby');
     console.log('=============================');
@@ -109,7 +109,7 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-  if (message.mentions.roles.some(r => mentions.indexOf(r.name)) || message.content === '!start') {
+  if (message.mentions.roles.some(r => mentions.indexOf(r.name) >= 0) || message.content === '!start') {
     const user = message.member;
     createLobby(message, user);
   }
