@@ -2,14 +2,14 @@ const config = require('./config.json');
 const constants = require('../utils/constants');
 
 class Lobby {
-  constructor(lobbyMessage = null) {
-    this.lobbyMessage = lobbyMessage;
+  constructor() {
+    this.lobbyMessage = null;
     this.collector = null;
     this.lobbyUsers = [];
   }
 
   // Initializes lobby with the message and the user who mentioned the bot
-  async initLobby(message, user) {
+  initLobby = async (message, user) => {
     if (this.lobbyMessage != null && !this.lobbyMessage.deleted) {
       // There's a lobby already
       console.log('Cancelling lobby');
@@ -37,7 +37,7 @@ class Lobby {
     this.collector.on('remove', this.onRemoveReact);
   }
 
-  addUser(user) {
+  addUser = user => {
     if (!this.lobbyUsers.hasOwnProperty(user.displayName)) {
       console.log(`Adding ${user.displayName} to current lobby`);
       this.lobbyUsers[user.displayName] = user.id;
@@ -48,14 +48,14 @@ class Lobby {
     }
   }
 
-  clearLobby() {
+  clearLobby = () => {
     this.lobbyMessage = null;
     this.collector.removeAllListeners();
     this.collector = null;
     this.lobbyUserNames = [];
   }
 
-  onReact(r, user) {
+  onReact = (r, user) => {
     const msg = r.message.toString();
     const foundGuildMember = r.message.guild.member(user);
     if (this.addUser(foundGuildMember)) {
@@ -71,7 +71,7 @@ class Lobby {
         this.lobbyMessage.channel.send(startMsg);
         console.log('=============================');
   
-        resetCurrLobby();
+        this.clearLobby();
       } else {
         const newMsg = msg.replace('Free', foundGuildMember.displayName);
         this.lobbyMessage.edit(newMsg);
@@ -79,7 +79,7 @@ class Lobby {
     }
   }
 
-  onRemoveReact(r, user) {
+  onRemoveReact = (r, user) => {
     const msg = r.message.toString();
     const foundGuildMember = r.message.guild.member(user);
     if (msg.indexOf(foundGuildMember.displayName) > 0) {

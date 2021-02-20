@@ -11,7 +11,6 @@ let lobby;
 
 client.once('ready', () => {
   console.log('Bot is ready');
-  lobby = new Lobby();
 });
 
 client.on('message', async (message) => {
@@ -19,7 +18,9 @@ client.on('message', async (message) => {
   if (message.mentions.roles.some(r => mentions.indexOf(r.name) >= 0) || message.content === '!start') {
     const user = message.member;
 
+    lobby = new Lobby();
     lobby.initLobby(message, user);
+    return;
   }
 });
 
