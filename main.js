@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const Lobby = require('./src/lobby');
+const { getTickerData } = require('./src/stocks/helper');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -24,4 +25,6 @@ client.on('message', async (message) => {
   }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+//client.login(process.env.DISCORD_TOKEN);
+
+getTickerData('asdqweqweGME');
