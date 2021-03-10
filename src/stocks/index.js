@@ -11,6 +11,10 @@ const createStockMessageEmbed = async (ticker) => {
   let tickerInfo;
   try {
     tickerInfo = await getTickerData(ticker);
+
+    if (tickerInfo.shortName === null || tickerInfo.shortName === undefined) {
+      return 'Ticker not found';
+    }
   } catch (err) {
     if (err.message === errorCodes.TICKER_NOT_FOUND) {
       return 'Ticker not found';
