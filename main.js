@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const Lobby = require('./src/lobby');
-const { getTickerData } = require('./src/stocks/helper');
+const { createStockMessageEmbed } = require('./src/stocks');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -15,16 +15,21 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-  const mentions = Lobby.getMentions();
-  if (message.mentions.roles.some(r => mentions.indexOf(r.name) >= 0) || message.content === '!start') {
+  const startLobbyMentions = Lobby.getMentions();
+  if (message.mentions.roles.some(r => startLobbyMentions.indexOf(r.name) >= 0) || message.content === '!start') {
     const user = message.member;
 
     lobby = new Lobby();
     lobby.initLobby(message, user);
     return;
+  } else if (message.content.startsWith('!stocks') || message.content.startsWith('!stock') || message.content.startsWith('!stonks') || message.content.startsWith('!stonk')) {
+    const args = message.content.split(" ");
+
+    const ticker = args[1];
+    const tickerData = await createStockMessageEmbed(ticker);
+
+    message.channel.send(tickerData);
   }
 });
 
-//client.login(process.env.DISCORD_TOKEN);
-
-getTickerData('asdqweqweGME');
+client.login(process.env.DISCORD_TOKEN);
