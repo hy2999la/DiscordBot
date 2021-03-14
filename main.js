@@ -12,6 +12,7 @@ let lobby;
 
 client.once('ready', () => {
   console.log('Bot is ready');
+  lobby = new Lobby();
 });
 
 client.on('message', async (message) => {
@@ -19,7 +20,6 @@ client.on('message', async (message) => {
   if (message.mentions.roles.some(r => startLobbyMentions.indexOf(r.name) >= 0) || message.content === '!start') {
     const user = message.member;
 
-    lobby = new Lobby();
     lobby.initLobby(message, user);
     return;
   } else if (message.content.startsWith('!stocks') || message.content.startsWith('!stock') || message.content.startsWith('!stonks') || message.content.startsWith('!stonk')) {
