@@ -52,7 +52,7 @@ class Lobby {
     this.lobbyMessage = null;
     this.collector.removeAllListeners();
     this.collector = null;
-    this.lobbyUserNames = [];
+    this.lobbyUsers = [];
   }
 
   onReact = (r, user) => {
