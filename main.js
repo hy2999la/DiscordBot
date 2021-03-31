@@ -21,6 +21,7 @@ client.on('message', async (message) => {
     const user = message.member;
 
     lobby.initLobby(message, user);
+    
     return;
   } else if (message.content.startsWith('!stocks') || message.content.startsWith('!stock') || message.content.startsWith('!stonks') || message.content.startsWith('!stonk')) {
     const args = message.content.split(" ");
