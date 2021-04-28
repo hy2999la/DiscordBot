@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { yahoofinance } = require('../../utils/constants');
+const { yahoofinance } = require('../../../utils/constants');
 
 module.exports = {
   getTickerData: async (ticker) => {

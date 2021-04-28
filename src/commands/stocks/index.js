@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 const { getTickerData } = require('./helper');
-const { yahoofinance, errorCodes } = require('../utils/constants');
+const { yahoofinance, errorCodes } = require('../../utils/constants');
 
 const twoDecimal = num => {
   return num ? Math.abs(num).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '';

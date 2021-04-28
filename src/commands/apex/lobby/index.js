@@ -3,13 +3,13 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 
 const config = require('./config.json');
-const constants = require('../utils/constants');
+const constants = require('../../../utils/constants');
 
 class Lobby {
   constructor() {
     this.lobbyMessage = null;
     this.collector = null;
-    this.lobbyUsers = [];
+    this.lobbyUsers = {};
   }
 
   // Initializes lobby with the message and the user who mentioned the bot
@@ -75,6 +75,17 @@ class Lobby {
     }
   }
 
+  removeUser = user => {
+    if (this.lobbyUsers.hasOwnProperty(user.displayName)) {
+      console.log(`Removing ${user.displayName} from current lobby`);
+      delete this.lobbyUsers[user.displayName];
+      return true;
+    } else {
+      console.log(`${user.displayName} is not in the lobby`);
+      return false;
+    }
+  }
+
   clearLobby = () => {
     this.lobbyMessage = null;
     this.collector.removeAllListeners();
@@ -87,7 +98,7 @@ class Lobby {
     const foundGuildMember = r.message.guild.member(user);
     if (this.addUser(foundGuildMember)) {
       if (Object.keys(this.lobbyUsers).length == constants.lobbySize.apex) {
-        console.log(`Current Lobby is now full, deleting lobby message!`);
+        console.log(`Current Lobby is now full, deleting old message and pinging current lobby users`);
         this.lobbyMessage.delete();
         let startMsg = 'Game is starting: ';
         for (let user in this.lobbyUsers) {
@@ -109,19 +120,19 @@ class Lobby {
   onRemoveReact = (r, user) => {
     const msg = r.message.toString();
     const foundGuildMember = r.message.guild.member(user);
-    if (msg.indexOf(foundGuildMember.displayName) > 0) {
-      console.log(`Removing ${foundGuildMember.displayName} from current lobby`);
-      delete this.lobbyUsers[foundGuildMember.displayName];
+
+    if (this.removeUser(foundGuildMember)) {
       const newMsg = msg.replace(foundGuildMember.displayName, 'Free');
-      this.lobbyMessage.edit(newMsg);
+      this.lobbyMessage.edit(newMsg); 
     } else {
-      console.log(`${foundGuildMember.displayName} is not in the lobby`);
+      console.log(`Tried removing ${foundGuildMember.displayName} but user is not in the lobby`);
     }
   }
 
-  static getMentions() {
+  getMentions() {
     return config.mentions;
   }
 }
 
-module.exports = Lobby;
+module.exports = new Lobby();
+
