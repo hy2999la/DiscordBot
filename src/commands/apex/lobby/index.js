@@ -31,7 +31,7 @@ class Lobby {
     this.addUser(user);
 
     let apexStatusMessage = '';
-
+/*
     try {
       const serverStatusRes = await fetch(`https://api.mozambiquehe.re/servers?auth=${process.env.APEX_STATUS_API_TOKEN}`);
 
@@ -51,7 +51,7 @@ class Lobby {
     } catch (err) {
       console.error(err);
     }
-
+*/
     this.lobbyMessage = await message.channel.send(
       `Creating a Lobby...\n*${apexStatusMessage}*\n\n1. ${user.displayName}\n2. Free\n3. Free\nReact to join this lobby`
     );
