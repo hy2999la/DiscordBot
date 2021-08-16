@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const fetch = require('node-fetch');
 
-const config = require('./config.json');
-const constants = require('../../../utils/constants');
+const config = require('../../../config.json');
+const { APEX } = require('../../../utils/constants');
 
 class Lobby {
   constructor() {
@@ -30,30 +30,8 @@ class Lobby {
 
     this.addUser(user);
 
-    let apexStatusMessage = '';
-/*
-    try {
-      const serverStatusRes = await fetch(`https://api.mozambiquehe.re/servers?auth=${process.env.APEX_STATUS_API_TOKEN}`);
-
-      const serverStatus = await serverStatusRes.json();
-
-      if (serverStatus && serverStatus['ApexOauth_Steam']['US-East'].HTTPCode === 200) {
-        const mapResponse = await fetch(`https://api.mozambiquehe.re/maprotation?auth=${process.env.APEX_STATUS_API_TOKEN}`);
-
-        const map = await mapResponse.json();
-
-        apexStatusMessage = mapResponse ? `Current map is **${map.current.map}** for another ${map.current.remainingTimer}`
-          : 'Apex Status API currently down...';
-      } else {
-        apexStatusMessage = 'Apex Steam Auth is currently down for US East. Are you sure you still want to create this lobby?';
-      }
-
-    } catch (err) {
-      console.error(err);
-    }
-*/
     this.lobbyMessage = await message.channel.send(
-      `Creating a Lobby...\n*${apexStatusMessage}*\n\n1. ${user.displayName}\n2. Free\n3. Free\nReact to join this lobby`
+      `Creating a Lobby...\n**\n\n1. ${user.displayName}\n2. Free\n3. Free\nReact to join this lobby`
     );
 
     await this.lobbyMessage.react('👍');
@@ -97,7 +75,7 @@ class Lobby {
     const msg = r.message.toString();
     const foundGuildMember = r.message.guild.member(user);
     if (this.addUser(foundGuildMember)) {
-      if (Object.keys(this.lobbyUsers).length == constants.lobbySize.apex) {
+      if (Object.keys(this.lobbyUsers).length == APEX.LOBBY_SIZE) {
         console.log(`Current Lobby is now full, deleting old message and pinging current lobby users`);
         this.lobbyMessage.delete();
         let startMsg = 'Game is starting: ';

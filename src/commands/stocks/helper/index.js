@@ -1,11 +1,11 @@
 const fetch = require('node-fetch');
-const { yahoofinance } = require('../../../utils/constants');
+const { YAHOOFINANCE } = require('../../../utils/constants');
 
 module.exports = {
   getTickerData: async (ticker) => {
     let result;
     try {
-      result = await fetch(`${yahoofinance.queryUrl}?symbols=${ticker}`);
+      result = await fetch(`${YAHOOFINANCE.queryUrl}?symbols=${ticker}`);
     } catch (err) {
       console.log(err);
       throw new Error('ERROR_FETCHING_TICKER');
@@ -16,7 +16,7 @@ module.exports = {
     if (data.quoteResponse && data.quoteResponse.result.length == 0) {
       // Try to append .TO for TORONTO EXCHANGE
       try {
-        result = await fetch(`${yahoofinance.queryUrl}?symbols=${ticker}.TO`);
+        result = await fetch(`${YAHOOFINANCE.queryUrl}?symbols=${ticker}.TO`);
       } catch (err) {
         console.log(err);
         throw new Error('ERROR_FETCHING_TICKER');

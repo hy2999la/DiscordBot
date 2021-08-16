@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 const { getTickerData } = require('./helper');
-const { yahoofinance, errorCodes } = require('../../utils/constants');
+const { YAHOOFINANCE, ERRORCODES } = require('../../utils/constants');
 
 const twoDecimal = num => {
   return num ? Math.abs(num).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '';
@@ -16,7 +16,7 @@ const createStockMessageEmbed = async (ticker) => {
       return 'Ticker not found';
     }
   } catch (err) {
-    if (err.message === errorCodes.TICKER_NOT_FOUND) {
+    if (err.message === ERRORCODES.TICKER_NOT_FOUND) {
       return 'Ticker not found';
     } else {
       throw err;
@@ -68,7 +68,7 @@ const createStockMessageEmbed = async (ticker) => {
 
   const message = new Discord.MessageEmbed()
     .setTitle(`${tickerInfo.shortName}`)
-    .setURL(`${yahoofinance.webpage}/${tickerInfo.symbol}`)
+    .setURL(`${YAHOOFINANCE.webpage}/${tickerInfo.symbol}`)
     .setDescription(`${tickerInfo.symbol} | ${tickerInfo.fullExchangeName}`)
     .addFields(marketPrice, marketDifferencePercent, highLow);
 
