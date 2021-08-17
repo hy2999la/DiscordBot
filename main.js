@@ -6,8 +6,8 @@ import lobbyJoinLeaveButton from './src/commands/apex/lobby-join-leave.js';
 import { Client, Collection, Intents } from 'discord.js';
 
 const intents = new Intents();
-intents.add(Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MESSAGES);
-const client = new Client({ intents });
+intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES);
+const client = new Client({ intents, allowedMentions: { parse: ['users', 'roles'] }, partials: ['MESSAGE' ] });
 
 client.commands = new Collection();
 client.commands.set(lobbyCommand.data.name, lobbyCommand);
@@ -25,19 +25,28 @@ client.on('interactionCreate', async interaction => {
 		if (!command) return;
 
 		try {
-			await command.execute(interaction, client);
+			await command.execute(interaction);
 		}
 		catch (err) {
 			console.error(err);
 		}
 	}
 	else if (interaction.isButton()) {
-		const command = client.commands.get(interaction.customId);
+		const id = interaction.customId.split(':');
+		const name = id[0];
+
+		const command = client.commands.get(name);
 
 		if (!command) return;
 
 		try {
-			await command.execute(interaction);
+			if (id.length > 1) {
+				const lobbyId = id[1];
+				await command.execute(interaction, lobbyId);
+			}
+			else {
+				await command.execute(interaction);
+			}
 		}
 		catch (err) {
 			console.error(err);

@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 import constants from '../../utils/constants.js';
 const { APEX } = constants;
 
@@ -5,23 +7,32 @@ class Lobby {
 	constructor() {
 		this.lobbyInteraction = null;
 		this.lobbyUsers = {};
+		this.lobbyId = 0;
 	}
 
 	async initLobby(member, empty) {
-		console.log(this.lobbyInteraction);
 		if (this.lobbyInteraction != null) {
 			console.log('Closing lobby');
 			console.log('=============================');
 
 			try {
-				await this.lobbyInteraction.deleteReply();
+				const message = await this.lobbyInteraction.fetchReply();
+				if (message.partial) {
+					const messageFetched = await message.fetch();
+					await messageFetched.edit({ content: 'Lobby Outdated', components: [] });
+				}
+				else {
+					await message.edit({ content: 'Lobby Outdated', components: [] });
+				}
 			}
 			catch(err) {
-				console.error('Failed to delete interaction');
+				console.error(err);
 			}
 		}
 
 		this.clearLobby();
+		const lobbyId = uuid();
+		this.lobbyId = lobbyId;
 
 		console.log('Creating lobby');
 		console.log('=============================');
@@ -29,6 +40,8 @@ class Lobby {
 		if (!empty) {
 			this.addUser(member);
 		}
+
+		return lobbyId;
 	}
 
 	setLobbyInteraction(message) {
@@ -40,13 +53,14 @@ class Lobby {
 	}
 
 	addUser(member) {
-		if (this.lobbyUsers[member.user.username] == null) {
-			console.log(`Adding ${member.nickname} to current lobby`);
-			this.lobbyUsers[member.user.username] = member.user.id;
-		}
-		else {
-			console.log(`${member.nickname} already exist in lobby`);
-		}
+		// if (this.lobbyUsers[member.user.username] == null) {
+		console.log(`Adding ${member.nickname} to current lobby`);
+		this.lobbyUsers[member.user.username] = member.user.id;
+		return Object.keys(this.lobbyUsers).length == APEX.LOBBY_SIZE;
+		// }
+		// else {
+		// 	console.log(`${member.nickname} already exist in lobby`);
+		// }
 	}
 
 	removeUser(member) {
@@ -64,30 +78,34 @@ class Lobby {
 		this.lobbyUsers = {};
 	}
 
-	// onReact(r, user) {
-	// 	const msg = r.message.toString();
-	// 	const foundGuildMember = r.message.guild.member(user);
-	// 	if (this.addUser(foundGuildMember)) {
-	// 		if (Object.keys(this.lobbyUsers).length == APEX.LOBBY_SIZE) {
-	// 			console.log('Current Lobby is now full, deleting old message and pinging current lobby users');
-	// 			this.lobbyMessage.delete();
-	// 			let startMsg = 'Game is starting: ';
-	// 			for (const lobbyUser in this.lobbyUsers) {
-	// 				startMsg += `<@${this.lobbyUsers[lobbyUser]}> /`;
-	// 			}
-	// 			startMsg = startMsg.slice(0, -2);
-	// 			startMsg += '. GL';
-	// 			this.lobbyMessage.channel.send(startMsg);
-	// 			console.log('=============================');
+	checkLobbyId(lobbyId) {
+		return this.lobbyId == lobbyId;
+	}
 
-	// 			this.clearLobby();
-	// 		}
-	// 		else {
-	// 			const newMsg = msg.replace('Free', foundGuildMember.displayName);
-	// 			this.lobbyMessage.edit(newMsg);
-	// 		}
-	// 	}
-	// }
+	onReact(r, user) {
+		const msg = r.message.toString();
+		const foundGuildMember = r.message.guild.member(user);
+		if (this.addUser(foundGuildMember)) {
+			if (Object.keys(this.lobbyUsers).length == APEX.LOBBY_SIZE) {
+				console.log('Current Lobby is now full, deleting old message and pinging current lobby users');
+				this.lobbyMessage.delete();
+				let startMsg = 'Game is starting: ';
+				for (const lobbyUser in this.lobbyUsers) {
+					startMsg += `<@${this.lobbyUsers[lobbyUser]}> /`;
+				}
+				startMsg = startMsg.slice(0, -2);
+				startMsg += '. GL';
+				this.lobbyMessage.channel.send(startMsg);
+				console.log('=============================');
+
+				this.clearLobby();
+			}
+			else {
+				const newMsg = msg.replace('Free', foundGuildMember.displayName);
+				this.lobbyMessage.edit(newMsg);
+			}
+		}
+	}
 }
 
 const instance = new Lobby();

@@ -1,35 +1,45 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { Interaction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { SlashCommandBuilder, roleMention } from '@discordjs/builders';
+import { MessageActionRow, MessageButton } from 'discord.js';
 
 import lobbyInstance from './lobbyHelper.js';
+import constants from '../../utils/constants.js';
+const { APEX, LOBBY } = constants;
 
 export default {
 	data: new SlashCommandBuilder()
 		.setName('lobby')
 		.setDescription('Create a lobby with you in it'),
-	channel: '808576788791427092',
-	async execute(interaction, client) {
-		const { member } = interaction;
+	async execute(interaction) {
+		if (LOBBY.ALLOWED_CHANNELS.includes(interaction.channelId)) {
+			const { member } = interaction;
 
-		lobbyInstance.initLobby(member, false);
-		const message =
-`Creating Lobby...
-**
-1. ${member.nickname}
-2. -Free-
-3. -Free-
-**
-`;
+			const lobbyId = await lobbyInstance.initLobby(member, false);
+			let message = APEX.MESSAGE;
+			message = message.replace('{ROLE_ID}', roleMention(APEX.ROLE_ID));
+			message = message.replace('-Free-', member.nickname);
 
-		const row = new MessageActionRow()
-			.addComponents(
-				new MessageButton()
-					.setCustomId('join-leave')
-					.setLabel('Join/Leave')
-					.setStyle('PRIMARY'),
-			);
+			const row = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+						.setCustomId(`join-leave:${lobbyId}`)
+						.setLabel('Join/Leave')
+						.setStyle('PRIMARY'),
+				);
 
-		await interaction.reply({ content: message, components: [row] });
-		lobbyInstance.setLobbyInteraction(interaction);
+			// If this lobby was started from a button
+			if (interaction.isButton()) {
+				// Remove the create lobby buttons
+				await interaction.update({ components: [] });
+				await interaction.followUp({ content: message, components: [row] });
+			}
+			else {
+				await interaction.reply({ content: message, components: [row] });
+			}
+
+			lobbyInstance.setLobbyInteraction(interaction);
+		}
+		else {
+			await interaction.reply({ content: 'This channel can\'t start a lobby', ephemeral: true });
+		}
 	},
 };
