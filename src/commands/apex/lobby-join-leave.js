@@ -12,11 +12,11 @@ export default {
 		const { content } = message;
 
 		if (lobbyInstance.checkLobbyId(lobbyId)) {
-			// if (lobbyInstance.containsUser(member)) {
-			// 	// lobbyInstance.removeUser(member);
-			// 	// interaction.update(content.replace(member.nickname, '-Free-'));
-			// }
-			// else
+			if (lobbyInstance.containsUser(member)) {
+				lobbyInstance.removeUser(member);
+				interaction.update(content.replace(member.nickname, '-Free-'));
+			}
+			else
 			if (lobbyInstance.addUser(member)) {
 				console.log('Current Lobby is now full, pinging current lobby users');
 				let startMessage = 'Game is starting: ';
