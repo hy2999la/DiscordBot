@@ -30,11 +30,11 @@ export default {
 					.addComponents(
 						new MessageButton()
 							.setCustomId('lobby')
-							.setLabel('Create lobby with me')
+							.setLabel('New lobby with me')
 							.setStyle('PRIMARY'),
 						new MessageButton()
 							.setCustomId('lobbyempty')
-							.setLabel('Create Empty Lobby')
+							.setLabel('New empty lobby')
 							.setStyle('SECONDARY'),
 					);
 				await interaction.update({ content: startMessage, components: [row] });
