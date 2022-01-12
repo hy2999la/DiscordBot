@@ -1,0 +1,23 @@
+{
+  "extends": "airbnb-base",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "off",
+    "comma-dangle": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        ".js": "always",
+        ".json": "always"
+      }
+    ],
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": [
+      "after",
+      { "overrides": { "?": "before", ":": "before" } }
+    ]
+  }
+}
