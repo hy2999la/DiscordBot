@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 import lobbyManager from '../../lobbyManager/index.js';
-import { buildFullLobbyMessage } from '../../utils/lobbyMessage.js';
+import { buildStartingLobbyMessage } from '../../utils/lobbyMessage.js';
 
 export default {
   data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ export default {
         console.log(
           'league: Current Lobby is now full, pinging current lobby users'
         );
-        await interaction.update(buildFullLobbyMessage(lobby));
+        await interaction.update(buildStartingLobbyMessage(lobby));
         console.log('league: Closing Lobby');
         lobbyManager.closeLobby(lobby);
       } else {
