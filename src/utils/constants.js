@@ -12,7 +12,8 @@ Creating Apex Lobby...
     ROLE_ID: '746118673470717962'
   },
   league: {
-    LOBBY_SIZE: 1,
+    LOBBY_SIZE: 5,
+    OPTIONS_MESSAGE: 'Which lobby would you like to start?',
     MESSAGE: `{ROLE_ID}
 Creating **{type}** Lobby...
 **
@@ -25,12 +26,31 @@ Creating **{type}** Lobby...
 `,
     ROLE_ID: '904901911310909491'
   },
-  LOBBY: {
-    ALLOWED_CHANNELS: [
-      '808576788791427092', // bot-test
-      '921950427484917811' // lobby
-    ],
-    MESSAGE: 'Which lobby would you like to start?'
+  ALLOWED_CHANNELS: {
+    prod: {
+      bestgame: [
+        '270085469667065856' // main chat
+      ],
+      apex: [
+        '808419512390516786', // apex
+        '270085469667065856' // main chat
+      ],
+      lobby: [
+        '808419512390516786', // apex
+        '270085469667065856' // main chat
+      ]
+    },
+    dev: {
+      bestgame: [
+        '808576788791427092' // bot-test
+      ],
+      apex: [
+        '808576788791427092' // bot-test
+      ],
+      lobby: [
+        '808576788791427092' // bot-test
+      ]
+    }
   },
   YAHOOFINANCE: {
     queryUrl: 'https://query1.finance.yahoo.com/v7/finance/quote',

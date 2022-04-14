@@ -16,13 +16,17 @@ export const buildLobbyMessage = (lobby, member) => {
     new MessageButton()
       .setCustomId(`lobby-join-leave-${lobby.game}:${lobby.id}`)
       .setLabel('Join/Leave')
-      .setStyle('PRIMARY')
+      .setStyle('PRIMARY'),
+    new MessageButton()
+      .setCustomId(`lobby-start-${lobby.game}:${lobby.id}`)
+      .setLabel('Start')
+      .setStyle('SUCCESS')
   );
   return { content: message, components: [row] };
 };
 
 export const buildLeagueLobbyInitMessage = () => {
-  let message = CONSTANTS.LOBBY.MESSAGE;
+  let message = CONSTANTS.league.OPTIONS_MESSAGE;
 
   const row = new MessageActionRow().addComponents(
     new MessageButton()
@@ -38,6 +42,11 @@ export const buildLeagueLobbyInitMessage = () => {
 };
 
 export const buildFullLobbyMessage = (lobby) => {
+  if (lobby.users.size === 0) {
+    console.log(`${lobby.game}: Started empty lobby, closing...`);
+    return { content: 'Closed empty lobby.', components: [] };
+  }
+
   let startMessage = `Game [${lobby.game}${
     lobby.type ? ` / ${lobby.type}` : ''
   }] is starting:\n`;

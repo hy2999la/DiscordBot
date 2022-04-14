@@ -27,7 +27,6 @@ export default class Lobby {
     } else {
       console.log(`${this.game}: ${member.nickname} already exist in lobby`);
     }
-    console.log(this.users.size);
     return this.users.size === constants[this.game].LOBBY_SIZE;
   }
 

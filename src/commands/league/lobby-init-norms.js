@@ -6,7 +6,6 @@ import { buildLobbyMessage } from '../../utils/lobbyMessage.js';
 export default {
   data: new SlashCommandBuilder().setName('lobby-init-norms'),
   async execute(interaction) {
-    console.log('league: Starting Lobby');
     const { member } = interaction;
     const lobby = await lobbyManager.createLobby({
       game: 'league',

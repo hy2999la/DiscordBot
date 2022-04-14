@@ -8,7 +8,6 @@ export default {
     .setName('apex')
     .setDescription('Create an apex lobby'),
   async execute(interaction) {
-    console.log('apex: Starting Lobby');
     const { member } = interaction;
     const lobby = await lobbyManager.createLobby({
       game: 'apex',
