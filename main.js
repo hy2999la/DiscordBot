@@ -1,5 +1,13 @@
 import { Client, Collection, Intents } from 'discord.js';
 import commands from './src/commands/index.js';
+import constants from './src/utils/constants.js';
+
+const filterAllowedChannels = (interaction) => {
+  const commandType = interaction.commandName.split('-')[0];
+  return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
+    commandType
+  ]?.includes(interaction.channelId);
+};
 
 const intents = new Intents();
 intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES);
@@ -22,6 +30,14 @@ client.on('interactionCreate', async (interaction) => {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) return;
+
+    if (!filterAllowedChannels(interaction)) {
+      interaction.reply({
+        content: 'This command is not allowed in this channel',
+        ephemeral: true
+      });
+      return;
+    }
 
     try {
       await command.execute(interaction, client);
