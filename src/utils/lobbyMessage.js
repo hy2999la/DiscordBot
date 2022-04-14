@@ -41,18 +41,18 @@ export const buildLeagueLobbyInitMessage = () => {
   return { content: message, components: [row], ephemeral: true };
 };
 
-export const buildFullLobbyMessage = (lobby) => {
+export const buildStartingLobbyMessage = (lobby) => {
   if (lobby.users.size === 0) {
     console.log(`${lobby.game}: Started empty lobby, closing...`);
     return { content: 'Closed empty lobby.', components: [] };
   }
 
-  let startMessage = `Game [${lobby.game}${
-    lobby.type ? ` / ${lobby.type}` : ''
-  }] is starting:\n`;
+  let startMessage = `[**${lobby.game}**${
+    lobby.type ? ` / **${lobby.type}**` : ''
+  }] Game is starting GL!\n`;
   const fullUsers = Array.from(lobby.users)
     .map((user) => userMention(user))
     .join('\n');
-  startMessage += `${fullUsers}\n\n GL!`;
+  startMessage += `${fullUsers}`;
   return { content: startMessage, components: [] };
 };
