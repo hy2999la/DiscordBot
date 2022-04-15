@@ -3,6 +3,20 @@ import { MessageActionRow, MessageButton } from 'discord.js';
 
 import CONSTANTS from './constants.js';
 
+export const updateLobbyList = (message, lobby) => {
+  const messageSplit = message.split('--');
+  const messageHeader = messageSplit[0];
+  let i = 1;
+  let lobbyList = Object.entries(lobby.users).map(
+    (user) => `${i++}. ${user[1]}`
+  );
+  for (; i <= lobby.maxSize; i++) {
+    lobbyList.push(`${i}. -Free-`);
+  }
+
+  return messageHeader + `--\n**` + lobbyList.join('\n') + '**';
+};
+
 export const buildLobbyMessage = (lobby, member) => {
   const CONSTANT = CONSTANTS[lobby.game];
   let message = CONSTANT.MESSAGE;
@@ -42,7 +56,7 @@ export const buildLeagueLobbyInitMessage = () => {
 };
 
 export const buildStartingLobbyMessage = (lobby) => {
-  if (lobby.users.size === 0) {
+  if (Object.keys(lobby.users).length === 0) {
     console.log(`${lobby.game}: Started empty lobby, closing...`);
     return { content: 'Closed empty lobby.', components: [] };
   }
@@ -50,8 +64,8 @@ export const buildStartingLobbyMessage = (lobby) => {
   let startMessage = `[**${lobby.game}**${
     lobby.type ? ` / **${lobby.type}**` : ''
   }] Game is starting GL!\n`;
-  const fullUsers = Array.from(lobby.users)
-    .map((user) => userMention(user))
+  const fullUsers = Object.entries(lobby.users)
+    .map((user) => userMention(user[0]))
     .join('\n');
   startMessage += `${fullUsers}`;
   return { content: startMessage, components: [] };
