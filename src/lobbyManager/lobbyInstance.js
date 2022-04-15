@@ -1,14 +1,12 @@
 import { v4 as uuid } from 'uuid';
-import constants from '../utils/constants.js';
 
 export default class Lobby {
   constructor({ game, type, maxSize }) {
     this.game = game;
     this.type = type;
-    this.users = new Set();
+    this.users = {};
     this.id = uuid();
     this.maxSize = maxSize;
-    this.messageId = '';
     this.message = null;
   }
 
@@ -17,17 +15,17 @@ export default class Lobby {
   }
 
   containsUser(member) {
-    return this.users.has(member.user.id);
+    return this.users[member.user.id] != null;
   }
 
   addUser(member) {
     if (!this.containsUser(member)) {
       console.log(`${this.game}: Adding ${member.nickname} to current lobby`);
-      this.users.add(member.user.id);
+      this.users[member.user.id] = member.nickname;
     } else {
       console.log(`${this.game}: ${member.nickname} already exist in lobby`);
     }
-    return this.users.size === constants[this.game].LOBBY_SIZE;
+    return Object.keys(this.users).length === this.maxSize;
   }
 
   removeUser(member) {
@@ -35,7 +33,7 @@ export default class Lobby {
       console.log(
         `${this.game}: Removing ${member.nickname} from current lobby`
       );
-      this.users.delete(member.user.id);
+      delete this.users[member.user.id];
     } else {
       console.log(
         `${this.game}: Tried removing ${member.nickname}, which is not in the lobby`

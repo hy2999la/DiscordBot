@@ -14,7 +14,7 @@ export default {
     });
     const message = buildLobbyMessage(lobby, member);
     try {
-      interaction.update({ components: [] });
+      await interaction.update({ components: [] });
     } catch (err) {
       console.error("league: Can't edit lobby options message");
     }

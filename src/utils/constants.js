@@ -3,7 +3,7 @@ export default {
     LOBBY_SIZE: 3,
     MESSAGE: `{ROLE_ID}
 Creating Apex Lobby...
-**
+--**
 1. -Free-
 2. -Free-
 3. -Free-
@@ -16,7 +16,7 @@ Creating Apex Lobby...
     OPTIONS_MESSAGE: 'Which lobby would you like to start?',
     MESSAGE: `{ROLE_ID}
 Creating **{type}** Lobby...
-**
+--**
 1. -Free-
 2. -Free-
 3. -Free-

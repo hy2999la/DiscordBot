@@ -1,7 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 import lobbyManager from '../../lobbyManager/index.js';
-import { buildStartingLobbyMessage } from '../../utils/lobbyMessage.js';
+import {
+  buildStartingLobbyMessage,
+  updateLobbyList
+} from '../../utils/lobbyMessage.js';
 
 export default {
   data: new SlashCommandBuilder()
@@ -15,7 +18,7 @@ export default {
       const lobby = lobbyManager.getLobbyInstance('league');
       if (lobby.containsUser(member)) {
         lobby.removeUser(member);
-        interaction.update(content.replace(member.nickname, '-Free-'));
+        await interaction.update(updateLobbyList(content, lobby));
       } else if (lobby.addUser(member)) {
         console.log(
           'league: Current Lobby is now full, pinging current lobby users'
@@ -24,10 +27,13 @@ export default {
         console.log('league: Closing Lobby');
         lobbyManager.closeLobby(lobby);
       } else {
-        interaction.update(content.replace('-Free-', member.nickname));
+        await interaction.update(updateLobbyList(content, lobby));
       }
     } else {
-      interaction.update({ content: 'Lobby is outdated', components: [] });
+      await interaction.update({
+        content: 'Lobby is outdated',
+        components: []
+      });
     }
   }
 };
