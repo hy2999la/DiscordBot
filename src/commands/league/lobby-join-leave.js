@@ -23,7 +23,8 @@ export default {
         console.log(
           'league: Current Lobby is now full, pinging current lobby users'
         );
-        await interaction.update(buildStartingLobbyMessage(lobby));
+        interaction.message.delete();
+        await interaction.reply(buildStartingLobbyMessage(lobby));
         console.log('league: Closing Lobby');
         lobbyManager.closeLobby(lobby);
       } else {
