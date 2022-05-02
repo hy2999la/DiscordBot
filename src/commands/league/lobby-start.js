@@ -8,7 +8,8 @@ export default {
   async execute(interaction) {
     console.log('league: Starting Lobby Prematurely');
     const lobby = lobbyManager.getLobbyInstance('league');
-    await interaction.update(buildStartingLobbyMessage(lobby));
+    interaction.message.delete();
+    await interaction.reply(buildStartingLobbyMessage(lobby));
     console.log('league: Closing Lobby');
     lobbyManager.closeLobby(lobby);
   }

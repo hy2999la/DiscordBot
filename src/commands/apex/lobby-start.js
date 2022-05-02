@@ -8,7 +8,8 @@ export default {
   async execute(interaction) {
     console.log('apex: Starting Lobby Prematurely');
     const lobby = lobbyManager.getLobbyInstance('apex');
-    await interaction.update(buildStartingLobbyMessage(lobby));
+    interaction.message.delete();
+    await interaction.reply(buildStartingLobbyMessage(lobby));
     console.log('apex: Closing Lobby');
     lobbyManager.closeLobby(lobby);
   }
