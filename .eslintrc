@@ -1,23 +1,35 @@
 {
-  "extends": "airbnb-base",
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "env": {
+    "node": true
+  },
   "parserOptions": {
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "plugins": [
+    "import",
+    "simple-import-sort",
+    "sort-destructure-keys",
+    "sort-keys-fix"
+  ],
   "rules": {
+    "import/extensions": ["error", "ignorePackages"],
     "no-console": "off",
-    "comma-dangle": "off",
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        ".js": "always",
-        ".json": "always"
-      }
-    ],
-    "implicit-arrow-linebreak": "off",
-    "operator-linebreak": [
-      "after",
-      { "overrides": { "?": "before", ":": "before" } }
-    ]
+    "no-plusplus": "off",
+    "no-underscore-dangle": "off",
+    // "import/order": [
+    //   "error",
+    //   {
+    //     "groups": [
+    //       ["builtin", "external"],
+    //       ["index", "parent", "sibling"]
+    //     ],
+    //     "newlines-between": "always"
+    //   }
+    // ],
+    "simple-import-sort/imports": "error",
+    "sort-destructure-keys/sort-destructure-keys": "error",
+    "sort-keys-fix/sort-keys-fix": ["error", "asc", { "natural": true }]
   }
 }
