@@ -1,117 +1,138 @@
 import Discord from 'discord.js';
 
-import getTickerData from './helper.js';
 import constants from '../../utils/constants.js';
-const { YAHOOFINANCE, ERRORCODES } = constants;
+import getTickerData from './helper.js';
 
-const twoDecimal = num => {
-	return num ? Math.abs(num).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '';
-};
+const { ERRORCODES, YAHOOFINANCE } = constants;
+
+const twoDecimal = (num) =>
+  num
+    ? Math.abs(num).toLocaleString('en-US', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
+      })
+    : '';
 
 const createStockMessageEmbed = async (ticker) => {
-	let tickerInfo;
-	try {
-		tickerInfo = await getTickerData(ticker);
+  let tickerInfo;
+  try {
+    tickerInfo = await getTickerData(ticker);
 
-		if (tickerInfo.shortName === null || tickerInfo.shortName === undefined) {
-			return 'Ticker not found';
-		}
-	}
-	catch (err) {
-		if (err.message === ERRORCODES.TICKER_NOT_FOUND) {
-			return 'Ticker not found';
-		}
-		else {
-			throw err;
-		}
-	}
+    if (tickerInfo.shortName === null || tickerInfo.shortName === undefined) {
+      return 'Ticker not found';
+    }
+  } catch (err) {
+    if (err.message === ERRORCODES.TICKER_NOT_FOUND) {
+      return 'Ticker not found';
+    }
 
-	tickerInfo = await getTickerData(ticker);
-	const marketPrice = tickerInfo.marketState === 'REGULAR' ? {
-		name: 'Current Market Price',
-		value: `$${twoDecimal(tickerInfo.regularMarketPrice)}`,
-		inline: true,
-	} : {
-		name: 'Post Market Price',
-		value: tickerInfo.postMarketPrice ? `$${twoDecimal(tickerInfo.postMarketPrice)}` : 'No Post Market Data Available',
-		inline: true,
-	};
+    throw err;
+  }
 
-	const currMarketDiffPerc = tickerInfo.marketState === 'REGULAR' ?
-		tickerInfo.regularMarketChangePercent : tickerInfo.postMarketChangePercent;
+  tickerInfo = await getTickerData(ticker);
+  const marketPrice =
+    tickerInfo.marketState === 'REGULAR'
+      ? {
+          inline: true,
+          name: 'Current Market Price',
+          value: `$${twoDecimal(tickerInfo.regularMarketPrice)}`
+        }
+      : {
+          inline: true,
+          name: 'Post Market Price',
+          value: tickerInfo.postMarketPrice
+            ? `$${twoDecimal(tickerInfo.postMarketPrice)}`
+            : 'No Post Market Data Available'
+        };
 
-	const currMarketDiff = tickerInfo.marketState === 'REGULAR' ?
-		tickerInfo.regularMarketChange : tickerInfo.postMarketChange;
+  const currMarketDiffPerc =
+    tickerInfo.marketState === 'REGULAR'
+      ? tickerInfo.regularMarketChangePercent
+      : tickerInfo.postMarketChangePercent;
 
-	let marketDiffText;
+  const currMarketDiff =
+    tickerInfo.marketState === 'REGULAR'
+      ? tickerInfo.regularMarketChange
+      : tickerInfo.postMarketChange;
 
-	if (currMarketDiff > 0) {
-		marketDiffText = `+$${twoDecimal(currMarketDiff)} (+${twoDecimal(currMarketDiffPerc)}%)`;
-	}
-	else if (currMarketDiff < 0) {
-		marketDiffText = `-$${twoDecimal(currMarketDiff)} (-${twoDecimal(currMarketDiffPerc)}%)`;
-	}
-	else if (currMarketDiff !== null && currMarketDiff !== undefined) {
-		marketDiffText = `$${twoDecimal(currMarketDiff)} (${twoDecimal(currMarketDiffPerc)}%)`;
-	}
-	else {
-		marketDiffText = '---';
-	}
+  let marketDiffText;
 
-	const marketDifferencePercent = {
-		name: tickerInfo.marketState === 'REGULAR' ? '+ / -' : 'Post + / -',
-		value: marketDiffText,
-		inline: true,
-	};
+  if (currMarketDiff > 0) {
+    marketDiffText = `+$${twoDecimal(currMarketDiff)} (+${twoDecimal(
+      currMarketDiffPerc
+    )}%)`;
+  } else if (currMarketDiff < 0) {
+    marketDiffText = `-$${twoDecimal(currMarketDiff)} (-${twoDecimal(
+      currMarketDiffPerc
+    )}%)`;
+  } else if (currMarketDiff !== null && currMarketDiff !== undefined) {
+    marketDiffText = `$${twoDecimal(currMarketDiff)} (${twoDecimal(
+      currMarketDiffPerc
+    )}%)`;
+  } else {
+    marketDiffText = '---';
+  }
 
-	const highLow = {
-		name: 'High / Low',
-		value: `$${twoDecimal(tickerInfo.regularMarketDayHigh)} / $${twoDecimal(tickerInfo.regularMarketDayLow)}`,
-		inline: true,
-	};
+  const marketDifferencePercent = {
+    inline: true,
+    name: tickerInfo.marketState === 'REGULAR' ? '+ / -' : 'Post + / -',
+    value: marketDiffText
+  };
 
-	const message = new Discord.MessageEmbed()
-		.setTitle(`${tickerInfo.shortName}`)
-		.setURL(`${YAHOOFINANCE.webpage}/${tickerInfo.symbol}`)
-		.setDescription(`${tickerInfo.symbol} | ${tickerInfo.fullExchangeName}`)
-		.addFields(marketPrice, marketDifferencePercent, highLow);
+  const highLow = {
+    inline: true,
+    name: 'High / Low',
+    value: `$${twoDecimal(tickerInfo.regularMarketDayHigh)} / $${twoDecimal(
+      tickerInfo.regularMarketDayLow
+    )}`
+  };
 
-	if (currMarketDiff < 0) {
-		message.setColor('#ff0000');
-	}
-	else if (currMarketDiff > 0) {
-		message.setColor('#008000');
-	}
-	else {
-		message.setColor('#c0c0c0');
-	}
+  const message = new Discord.MessageEmbed()
+    .setTitle(`${tickerInfo.shortName}`)
+    .setURL(`${YAHOOFINANCE.webpage}/${tickerInfo.symbol}`)
+    .setDescription(`${tickerInfo.symbol} | ${tickerInfo.fullExchangeName}`)
+    .addFields(marketPrice, marketDifferencePercent, highLow);
 
-	if (tickerInfo.marketState !== 'REGULAR') {
-		const closedMarketDiff = tickerInfo.regularMarketChangePercent;
-		let closedMarketDiffText;
-		if (closedMarketDiff > 0) {
-			closedMarketDiffText = `+$${twoDecimal(tickerInfo.regularMarketChange)} (+${twoDecimal(closedMarketDiff)}%)`;
-		}
-		else if (currMarketDiff < 0) {
-			closedMarketDiffText = `-$${twoDecimal(tickerInfo.regularMarketChange)} (-${twoDecimal(closedMarketDiff)}%)`;
-		}
-		else {
-			closedMarketDiffText = `$${twoDecimal(tickerInfo.regularMarketChange)} (${twoDecimal(closedMarketDiff)}%)`;
-		}
+  if (currMarketDiff < 0) {
+    message.setColor('#ff0000');
+  } else if (currMarketDiff > 0) {
+    message.setColor('#008000');
+  } else {
+    message.setColor('#c0c0c0');
+  }
 
-		message.addFields({
-			name: 'Closing Market Price',
-			value: `$${twoDecimal(tickerInfo.regularMarketPrice)}`,
-			inline: true,
-		},
-		{
-			name: 'Closing + / -',
-			value: closedMarketDiffText,
-			inline: true,
-		});
-	}
+  if (tickerInfo.marketState !== 'REGULAR') {
+    const closedMarketDiff = tickerInfo.regularMarketChangePercent;
+    let closedMarketDiffText;
+    if (closedMarketDiff > 0) {
+      closedMarketDiffText = `+$${twoDecimal(
+        tickerInfo.regularMarketChange
+      )} (+${twoDecimal(closedMarketDiff)}%)`;
+    } else if (currMarketDiff < 0) {
+      closedMarketDiffText = `-$${twoDecimal(
+        tickerInfo.regularMarketChange
+      )} (-${twoDecimal(closedMarketDiff)}%)`;
+    } else {
+      closedMarketDiffText = `$${twoDecimal(
+        tickerInfo.regularMarketChange
+      )} (${twoDecimal(closedMarketDiff)}%)`;
+    }
 
-	return message;
+    message.addFields(
+      {
+        inline: true,
+        name: 'Closing Market Price',
+        value: `$${twoDecimal(tickerInfo.regularMarketPrice)}`
+      },
+      {
+        inline: true,
+        name: 'Closing + / -',
+        value: closedMarketDiffText
+      }
+    );
+  }
+
+  return message;
 };
 
-export { createStockMessageEmbed };
+export default { createStockMessageEmbed };

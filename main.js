@@ -1,4 +1,5 @@
 import { Client, Collection, Intents } from 'discord.js';
+
 import commands from './src/commands/index.js';
 import constants from './src/utils/constants.js';
 
@@ -31,7 +32,9 @@ const client = new Client({
 
 client.commands = new Collection();
 Object.entries(commands).forEach((command) => {
-  client.commands.set(command[1].data.name, command[1]);
+  command[1].forEach((c) => {
+    client.commands.set(c.data.name, c);
+  });
 });
 
 client.once('ready', () => {
