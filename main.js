@@ -4,10 +4,23 @@ import commands from './src/commands/index.js';
 import constants from './src/utils/constants.js';
 
 const filterAllowedChannels = (interaction) => {
-  const commandType = interaction.commandName.split('-')[0];
-  return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
-    commandType
-  ]?.includes(interaction.channelId);
+  if (process.env.ENVIRONMENT === 'dev') {
+    return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? 1 : -1;
+  }
+  if (constants.ALLOWED_CHANNELS.dev === interaction.channelId) {
+    return -2;
+  }
+
+  if (interaction.type === 'APPLICATION_COMMAND') {
+    const commandType = interaction.commandName.split('-')[0];
+    return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
+      commandType
+    ]?.includes(interaction.channelId)
+      ? 1
+      : 0;
+  }
+
+  return 1;
 };
 
 const intents = new Intents();
@@ -29,42 +42,63 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (interaction.isCommand()) {
-    const command = client.commands.get(interaction.commandName);
+  try {
+    if (interaction.isCommand()) {
+      const command = client.commands.get(interaction.commandName);
 
-    if (!command) return;
+      if (!command) return;
 
-    if (!filterAllowedChannels(interaction)) {
-      interaction.reply({
-        content: 'This command is not allowed in this channel',
-        ephemeral: true
-      });
-      return;
-    }
-
-    try {
-      await command.execute(interaction, client);
-    } catch (err) {
-      console.error(err);
-    }
-  } else if (interaction.isButton()) {
-    const id = interaction.customId.split(':');
-    const name = id[0];
-
-    const command = client.commands.get(name);
-
-    if (!command) return;
-
-    try {
-      if (id.length > 1) {
-        const lobbyId = id[1];
-        await command.execute(interaction, lobbyId);
-      } else {
-        await command.execute(interaction);
+      switch (filterAllowedChannels(interaction)) {
+        case 0:
+          interaction.reply({
+            content: 'This command is not allowed in this channel',
+            ephemeral: true
+          });
+          return;
+        case -1:
+          setTimeout(async () => {
+            interaction
+              .reply({
+                content: 'Bot is currently in dev mode.',
+                ephemeral: true
+              })
+              .catch(() => {});
+          }, 1000);
+          return;
+        case -2:
+          return;
+        default:
+          break;
       }
-    } catch (err) {
-      console.error(err);
+
+      try {
+        await command.execute(interaction, client);
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (interaction.isButton()) {
+      if (filterAllowedChannels(interaction) !== 1) return;
+
+      const id = interaction.customId.split(':');
+      const name = id[0];
+
+      const command = client.commands.get(name);
+
+      if (!command) return;
+
+      try {
+        if (id.length > 1) {
+          const lobbyId = id[1];
+          await command.execute(interaction, lobbyId);
+        } else {
+          await command.execute(interaction);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
+  } catch (e) {
+    console.log(e);
   }
 });
 

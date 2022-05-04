@@ -1,16 +1,6 @@
 export default {
   ALLOWED_CHANNELS: {
-    dev: {
-      apex: [
-        '808576788791427092' // bot-test
-      ],
-      bestgame: [
-        '808576788791427092' // bot-test
-      ],
-      lobby: [
-        '808576788791427092' // bot-test
-      ]
-    },
+    dev: '808576788791427092', // bot-test,
     prod: {
       apex: [
         '808419512390516786', // apex
