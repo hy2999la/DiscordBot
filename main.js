@@ -18,8 +18,8 @@ const filterAllowedChannels = (interaction) => {
 const intents = new Intents();
 intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES);
 const client = new Client({
-  intents,
-  allowedMentions: { parse: ['users', 'roles'] }
+  allowedMentions: { parse: ['users', 'roles'] },
+  intents
 });
 
 client.commands = new Collection();
@@ -62,6 +62,8 @@ client.on('interactionCreate', async (interaction) => {
       console.error(err);
     }
   } else if (interaction.isButton()) {
+    if (filterAllowedChannels(interaction) !== 1) return;
+
     const id = interaction.customId.split(':');
     const name = id[0];
 
