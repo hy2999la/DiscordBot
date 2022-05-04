@@ -14,7 +14,9 @@ const filterAllowedChannels = (interaction) => {
     const commandType = interaction.commandName.split('-')[0];
     return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
       commandType
-    ]?.includes(interaction.channelId);
+    ]?.includes(interaction.channelId)
+      ? 1
+      : 0;
   }
 
   return 1;
@@ -52,14 +54,12 @@ client.on('interactionCreate', async (interaction) => {
           return;
         case -1:
           setTimeout(async () => {
-            try {
-              await interaction.reply({
+            interaction
+              .reply({
                 content: 'Bot is currently in dev mode.',
                 ephemeral: true
-              });
-            } catch (e) {
-              console.log('prod bot responded');
-            }
+              })
+              .catch(() => {});
           }, 1000);
           return;
         case -2:
