@@ -40,17 +40,7 @@ Creating **{type}** Lobby...
         '270085469667065856' // main chat
       ]
     },
-    dev: {
-      bestgame: [
-        '808576788791427092' // bot-test
-      ],
-      apex: [
-        '808576788791427092' // bot-test
-      ],
-      lobby: [
-        '808576788791427092' // bot-test
-      ]
-    }
+    dev: '808576788791427092' // bot-test
   },
   YAHOOFINANCE: {
     queryUrl: 'https://query1.finance.yahoo.com/v7/finance/quote',

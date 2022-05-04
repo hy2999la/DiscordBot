@@ -4,6 +4,12 @@ import constants from './src/utils/constants.js';
 
 const filterAllowedChannels = (interaction) => {
   const commandType = interaction.commandName.split('-')[0];
+  if (process.env.ENVIRONMENT === 'dev') {
+    return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? 1 : -1;
+  }
+  if (constants.ALLOWED_CHANNELS.dev === interaction.channelId) {
+    return -2;
+  }
   return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
     commandType
   ]?.includes(interaction.channelId);
@@ -31,12 +37,23 @@ client.on('interactionCreate', async (interaction) => {
 
     if (!command) return;
 
-    if (!filterAllowedChannels(interaction)) {
-      interaction.reply({
-        content: 'This command is not allowed in this channel',
-        ephemeral: true
-      });
-      return;
+    switch (filterAllowedChannels(interaction)) {
+      case 0:
+        interaction.reply({
+          content: 'This command is not allowed in this channel',
+          ephemeral: true
+        });
+        return;
+      case -1:
+        interaction.reply({
+          content: 'Bot is currently in dev mode.',
+          ephemeral: true
+        });
+        return;
+      case -2:
+        return;
+      default:
+        break;
     }
 
     try {
