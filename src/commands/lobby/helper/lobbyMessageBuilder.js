@@ -42,11 +42,7 @@ Creating ${title} Lobby...
     new MessageButton()
       .setCustomId(`lobby-join-leave-${game}:${id}`)
       .setLabel('Join/Leave')
-      .setStyle('PRIMARY'),
-    new MessageButton()
-      .setCustomId(`lobby-start-${game}:${id}`)
-      .setLabel('Start')
-      .setStyle('SUCCESS')
+      .setStyle('PRIMARY')
   );
   return { components: [row], content: message };
 };

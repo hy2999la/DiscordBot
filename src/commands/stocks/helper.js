@@ -16,7 +16,7 @@ export default {
 
     let data = await result.json();
 
-    if (data.quoteResponse && data.quoteResponse.result.length == 0) {
+    if (data.quoteResponse && data.quoteResponse.result.length === 0) {
       // Try to append .TO for TORONTO EXCHANGE
       try {
         result = await fetch(`${YAHOOFINANCE.queryUrl}?symbols=${ticker}.TO`);
