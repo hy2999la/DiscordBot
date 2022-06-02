@@ -1,17 +1,12 @@
 import { v4 as uuid } from 'uuid';
 
 export default class Lobby {
-  constructor({ game, type, maxSize }) {
+  constructor({ game, maxSize, type }) {
     this.game = game;
     this.type = type;
     this.users = {};
     this.id = uuid();
     this.maxSize = maxSize;
-    this.message = null;
-  }
-
-  setLobbyInteraction(message) {
-    this.message = message;
   }
 
   containsUser(member) {

@@ -1,27 +1,20 @@
-import { v4 as uuid } from 'uuid';
-
 import Lobby from './lobbyInstance.js';
-import constants from '../utils/constants.js';
 
 const lobbies = {};
 
 const sameLobbyOfGameExists = (game) =>
   lobbies[game] && Object.keys(lobbies[game]).length !== 0;
 
-const getLobbyInstance = (game) => {
-  return lobbies[game];
-};
+const getLobby = (game) => lobbies[game];
 
-const checkLobbyId = (game, lobbyId) => {
-  return lobbies[game].checkLobbyId(lobbyId);
-};
+const checkLobbyId = (game, lobbyId) => lobbies[game].checkLobbyId(lobbyId);
 
-const createLobby = async ({ game, member, type = null }) => {
+const createLobby = async ({ game, maxSize, member, type = null }) => {
   if (sameLobbyOfGameExists(game)) {
     console.log(`${game}: Closing outdated lobby`);
     try {
       const message = await lobbies[game].message;
-      await message.edit({ content: 'Lobby Outdated', components: [] });
+      await message.edit({ components: [], content: 'Lobby Outdated' });
     } catch (err) {
       console.error(err);
     }
@@ -31,8 +24,8 @@ const createLobby = async ({ game, member, type = null }) => {
 
   lobbies[game] = new Lobby({
     game,
-    type,
-    maxSize: constants[game].LOBBY_SIZE
+    maxSize,
+    type
   });
   lobbies[game].addUser(member);
 
@@ -46,8 +39,8 @@ const closeLobby = async (lobby) => {
 };
 
 export default {
-  createLobby,
-  getLobbyInstance,
   checkLobbyId,
-  closeLobby
+  closeLobby,
+  createLobby,
+  getLobby
 };
