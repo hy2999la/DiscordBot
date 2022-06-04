@@ -25,10 +25,17 @@ const filterAllowedChannels = (interaction) => {
 
 const intents = new Intents();
 intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES);
-const client = new Client({
+const clientOptions = {
   allowedMentions: { parse: ['users', 'roles'] },
   intents
-});
+};
+
+if (process.env.ENVIRONMENT === 'dev') {
+  clientOptions.presence = {
+    status: 'invisible'
+  };
+}
+const client = new Client(clientOptions);
 
 client.commands = new Collection();
 Object.entries(commands).forEach((command) => {

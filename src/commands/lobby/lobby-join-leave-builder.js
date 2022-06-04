@@ -1,14 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-import games from './helper/gamesParser.js';
+import gameJsons from './helper/gamesParser.js';
 import {
   buildLobbyStartMessage,
   updateLobbyList
 } from './helper/lobbyMessageBuilder.js';
 import lobbyManager from './lobbyManager/index.js';
 
-const lobbyJoinLeaveCommands = games.map((game) => {
-  const { name } = game;
+const lobbyJoinLeaveCommands = gameJsons.map((gameJson) => {
+  const { name } = gameJson;
   return {
     data: new SlashCommandBuilder().setName(`lobby-join-leave-${name}`),
     async execute(interaction, lobbyId) {
@@ -25,7 +25,7 @@ const lobbyJoinLeaveCommands = games.map((game) => {
             `${name}: Current Lobby is now full, pinging current lobby users`
           );
           interaction.message.delete();
-          await interaction.reply(buildLobbyStartMessage(lobby));
+          await interaction.reply(buildLobbyStartMessage(lobby, gameJson));
           console.log(`${name}: Closing Lobby`);
           lobbyManager.closeLobby(lobby);
         } else {
