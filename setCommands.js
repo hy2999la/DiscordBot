@@ -14,12 +14,16 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
       {
         body: [
           {
-            description: 'Start apex lobby',
+            description: 'Start Apex lobby',
             name: 'apex'
           },
           {
-            description: 'Start best game lobby',
+            description: 'Start Best Game lobby',
             name: 'bestgame'
+          },
+          {
+            description: 'Start Overwatch lobby',
+            name: 'ow'
           }
         ]
       }
