@@ -12,7 +12,8 @@ export default {
       lobby: [
         '808419512390516786', // apex
         '270085469667065856' // main chat
-      ]
+      ],
+      ow: ['270085469667065856'] // main chat
     }
   },
   ERRORCODES: {
