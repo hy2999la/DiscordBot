@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    environment:
+      - DISCORD_TOKEN=$DISCORD_TOKEN
+      - CLIENT_ID=$CLIENT_ID
+      - CLIENT_SECRET=$CLIENT_SECRET
+      - GUILD_ID=$GUILD_ID
+      - ENVIRONMENT=dev
