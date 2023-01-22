@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from 'discord.js';
 
-import gameJsons from './helper/gamesParser.js';
+import lobbyManager from '../../lobbyManager/index.js';
+import gameJsons from '../../lobbyManager/lobbyConfigParser.js';
 import {
   buildLobbyStartMessage,
   updateLobbyList
-} from './helper/lobbyMessageBuilder.js';
-import lobbyManager from './lobbyManager/index.js';
+} from '../../lobbyManager/lobbyMessageBuilder.js';
 
 const lobbyJoinLeaveCommands = gameJsons.map((gameJson) => {
   const { name } = gameJson;

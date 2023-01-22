@@ -1,5 +1,10 @@
-import { roleMention, userMention } from '@discordjs/builders';
-import { MessageActionRow, MessageButton } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  roleMention,
+  userMention
+} from 'discord.js';
 
 const buildLobbyList = (lobby) => {
   let i = 1;
@@ -38,11 +43,11 @@ Creating ${title} Lobby...
 --
 **${buildLobbyList(lobby)}**`;
 
-  const row = new MessageActionRow().addComponents(
-    new MessageButton()
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
       .setCustomId(`lobby-join-leave-${game}:${id}`)
       .setLabel('Join/Leave')
-      .setStyle('PRIMARY')
+      .setStyle(ButtonStyle.Primary)
   );
   return { components: [row], content: message };
 };
@@ -50,12 +55,12 @@ Creating ${title} Lobby...
 export const buildLobbyTypeMessage = (types) => {
   const message = 'Which lobby would you like to start?';
 
-  const row = new MessageActionRow().addComponents(
+  const row = new ActionRowBuilder().addComponents(
     types.map((type) =>
-      new MessageButton()
+      new ButtonBuilder()
         .setCustomId(type.name)
         .setLabel(type.displayName)
-        .setStyle('PRIMARY')
+        .setStyle(ButtonStyle.Primary)
     )
   );
   return { components: [row], content: message, ephemeral: true };
