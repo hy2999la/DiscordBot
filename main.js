@@ -1,4 +1,4 @@
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
 import commands from './src/commands/index.js';
 import constants from './src/utils/constants.js';
@@ -23,11 +23,9 @@ const filterAllowedChannels = (interaction) => {
   return 1;
 };
 
-const intents = new Intents();
-intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES);
 const clientOptions = {
   allowedMentions: { parse: ['users', 'roles'] },
-  intents
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 };
 
 if (process.env.ENVIRONMENT === 'dev') {

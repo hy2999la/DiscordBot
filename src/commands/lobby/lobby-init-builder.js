@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from 'discord.js';
 
 import gameJsons from './helper/gamesParser.js';
 import {
@@ -37,10 +37,10 @@ const lobbyInitCommands = gameJsons.flatMap((gameJson) => {
           });
           const message = buildLobbyInitMessage(lobby, gameJson);
           if (interaction.component) {
-            interaction.update({ components: [] });
-            await interaction.followUp(message);
+            await interaction.update({ components: [] });
+            interaction.followUp(message);
           } else {
-            await interaction.reply(message);
+            interaction.reply(message);
           }
         }
       }))
