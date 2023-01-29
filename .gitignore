@@ -1,5 +1,13 @@
 node_modules
-src/commands/lobby/games/*.js
+src/lobbyManager/lobbyConfig/*.ts
 .env
 .vscode
 .vs
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
