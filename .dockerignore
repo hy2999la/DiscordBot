@@ -1,1 +1,7 @@
 node_modules
+.github
+.eslintrc
+.gitignore
+.prettierignore
+.prettierrc
+README.md
