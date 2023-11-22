@@ -55,11 +55,9 @@ Object.entries(commands).forEach((command) => {
 
 client.once('ready', (c) => {
   console.log('Bot is ready');
-  console.log(c);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  console.log('incoming,', interaction);
   try {
     if (interaction.isChatInputCommand()) {
       const command = interaction.client.commands.get(interaction.commandName);
