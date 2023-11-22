@@ -1,31 +1,42 @@
-import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 
 import commands from './src/commands/index.js';
 import constants from './src/utils/constants.js';
 
+/**
+ *
+ * @param {import('discord.js').Interaction} interaction
+ * @returns
+ */
 const filterAllowedChannels = (interaction) => {
   if (process.env.ENVIRONMENT === 'dev') {
-    return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? 1 : -1;
+    return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? 0 : -1;
   }
+
   if (constants.ALLOWED_CHANNELS.dev === interaction.channelId) {
     return -2;
   }
 
-  if (interaction.type === 'APPLICATION_COMMAND') {
+  if (interaction.isChatInputCommand()) {
     const commandType = interaction.commandName.split('-')[0];
+
     return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
       commandType
     ]?.includes(interaction.channelId)
-      ? 1
-      : 0;
+      ? 0
+      : 1;
   }
 
-  return 1;
+  return 0;
 };
 
 const clientOptions = {
   allowedMentions: { parse: ['users', 'roles'] },
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 };
 
 if (process.env.ENVIRONMENT === 'dev') {
@@ -42,38 +53,31 @@ Object.entries(commands).forEach((command) => {
   });
 });
 
-client.once('ready', () => {
+client.once('ready', (c) => {
   console.log('Bot is ready');
+  console.log(c);
 });
 
-client.on('interactionCreate', async (interaction) => {
+client.on(Events.InteractionCreate, async (interaction) => {
+  console.log('incoming,', interaction);
   try {
-    if (interaction.isCommand()) {
-      const command = client.commands.get(interaction.commandName);
+    if (interaction.isChatInputCommand()) {
+      const command = interaction.client.commands.get(interaction.commandName);
 
       if (!command) return;
 
       switch (filterAllowedChannels(interaction)) {
         case 0:
+          break;
+        case 1:
           interaction.reply({
             content: 'This command is not allowed in this channel',
             ephemeral: true
           });
           return;
         case -1:
-          setTimeout(async () => {
-            interaction
-              .reply({
-                content: 'Bot is currently in dev mode.',
-                ephemeral: true
-              })
-              .catch(() => {});
-          }, 1000);
-          return;
         case -2:
           return;
-        default:
-          break;
       }
 
       try {
@@ -82,7 +86,7 @@ client.on('interactionCreate', async (interaction) => {
         console.error(err);
       }
     } else if (interaction.isButton()) {
-      if (filterAllowedChannels(interaction) !== 1) return;
+      if (filterAllowedChannels(interaction) !== 0) return;
 
       const id = interaction.customId.split(':');
       const name = id[0];

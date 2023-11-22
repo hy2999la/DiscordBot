@@ -7,11 +7,12 @@ const sameLobbyOfGameExists = (game) =>
 
 const getLobby = (game) => lobbies[game];
 
-const checkLobbyId = (game, lobbyId) => lobbies[game].checkLobbyId(lobbyId);
+const checkLobbyId = (game, lobbyId) =>
+  lobbies[game] && lobbies[game].checkLobbyId(lobbyId);
 
 const createLobby = async ({ game, maxSize, member, type = null }) => {
   if (sameLobbyOfGameExists(game)) {
-    console.log(`${game}: Closing outdated lobby`);
+    console.log(`[${game}] Closing lobby`);
     try {
       const message = await lobbies[game].message;
       await message.edit({ components: [], content: 'Lobby Outdated' });
@@ -20,7 +21,7 @@ const createLobby = async ({ game, maxSize, member, type = null }) => {
     }
   }
 
-  console.log(`${game}: Creating lobby`);
+  console.log(`[${game}] Creating lobby`);
 
   lobbies[game] = new Lobby({
     game,

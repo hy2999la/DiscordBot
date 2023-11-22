@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder,
+  bold,
   ButtonBuilder,
   ButtonStyle,
   roleMention,
@@ -31,17 +32,17 @@ export const buildLobbyInitMessage = (lobby, gameJson) => {
   let roleIdMention;
   if (type) {
     const typeJson = gameJson.params.find((p) => p.name === type);
-    title = `[**${gameJson.displayName}** / **${typeJson.displayName}**]`;
+    title = `[${bold(gameJson.displayName)} / ${bold(typeJson.displayName)}]`;
     roleIdMention = roleMention(typeJson.roleId);
   } else {
-    title = `[**${gameJson.displayName}**]`;
+    title = `[${bold(gameJson.displayName)}]`;
     roleIdMention = roleMention(gameJson.params.roleId);
   }
 
   const message = `${roleIdMention}
 Creating ${title} Lobby...
 --
-**${buildLobbyList(lobby)}**`;
+${bold(buildLobbyList(lobby))}`;  
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()

@@ -7,3 +7,5 @@ services:
       - CLIENT_SECRET=$CLIENT_SECRET
       - GUILD_ID=$GUILD_ID
       - ENVIRONMENT=$ENVIRONMENT
+    volumes:
+      - ./src/commands/lobby/games:/app/src/commands/lobby/games

@@ -15,13 +15,5 @@ export default {
       ],
       ow: ['270085469667065856'] // main chat
     }
-  },
-  ERRORCODES: {
-    ERROR_FETCHING_TICKER_DATA: 'ERROR_FETCHING_TICKER_DATA',
-    TICKER_NOT_FOUND: 'TICKER_NOT_FOUND'
-  },
-  YAHOOFINANCE: {
-    queryUrl: 'https://query1.finance.yahoo.com/v7/finance/quote',
-    webpage: 'https://finance.yahoo.com/quote'
   }
 };

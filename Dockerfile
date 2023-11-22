@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM node:18
-WORKDIR /DiscordBot
-COPY ["package*.json", "./"]
+FROM node:20
+WORKDIR /app
+COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production
 
 COPY . .
-CMD ["npm", "start"]
-EXPOSE 3000
+CMD ["node", "main.js"]

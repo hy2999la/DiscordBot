@@ -1,16 +1,15 @@
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
-
-const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
+import { REST, Routes } from 'discord.js';
 
 (async () => {
   try {
     console.log('Updating command list');
+
+    const rest = new REST({ version: '10' }).setToken(
+      process.env.DISCORD_TOKEN
+    );
+
     const res = await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID
-      ),
+      Routes.applicationCommands(process.env.CLIENT_ID),
       {
         body: [
           {
@@ -24,6 +23,14 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
           {
             description: 'Start Overwatch lobby',
             name: 'ow'
+          },
+          {
+            description: 'Start Rainbox 6 Siege lobby',
+            name: 'r6'
+          },
+          {
+            description: 'Start Valorant lobby',
+            name: 'valorant'
           }
         ]
       }

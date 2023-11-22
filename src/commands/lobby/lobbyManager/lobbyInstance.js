@@ -15,10 +15,10 @@ export default class Lobby {
 
   addUser(member) {
     if (!this.containsUser(member)) {
-      console.log(`${this.game}: Adding ${member.nickname} to current lobby`);
+      console.log(`[${this.game}] Adding ${member.nickname} to current lobby`);
       this.users[member.user.id] = member.nickname;
     } else {
-      console.log(`${this.game}: ${member.nickname} already exist in lobby`);
+      console.log(`[${this.game}] ${member.nickname} already exist in lobby`);
     }
     return Object.keys(this.users).length === this.maxSize;
   }
@@ -26,12 +26,12 @@ export default class Lobby {
   removeUser(member) {
     if (this.containsUser(member)) {
       console.log(
-        `${this.game}: Removing ${member.nickname} from current lobby`
+        `[${this.game}] Removing ${member.nickname} from current lobby`
       );
       delete this.users[member.user.id];
     } else {
       console.log(
-        `${this.game}: Tried removing ${member.nickname}, which is not in the lobby`
+        `[${this.game}] Tried removing ${member.nickname}, which is not in the lobby`
       );
     }
   }
