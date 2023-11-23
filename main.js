@@ -13,18 +13,8 @@ const filterAllowedChannels = (interaction) => {
     return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? 0 : -1;
   }
 
-  if (constants.ALLOWED_CHANNELS.dev === interaction.channelId) {
-    return -2;
-  }
-
-  if (interaction.isChatInputCommand()) {
-    const commandType = interaction.commandName.split('-')[0];
-
-    return constants.ALLOWED_CHANNELS[process.env.ENVIRONMENT][
-      commandType
-    ]?.includes(interaction.channelId)
-      ? 0
-      : 1;
+  if (process.env.ENVIRONMENT === 'prod') {
+    return constants.ALLOWED_CHANNELS.dev === interaction.channelId ? -1 : 0;
   }
 
   return 0;
